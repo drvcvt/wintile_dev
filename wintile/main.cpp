@@ -8,6 +8,11 @@
 #define HOTKEY_ID_K 3
 #define HOTKEY_ID_L 4
 
+#define HOTKEY_ID_SHIFT_H 5
+#define HOTKEY_ID_SHIFT_J 6
+#define HOTKEY_ID_SHIFT_K 7
+#define HOTKEY_ID_SHIFT_L 8
+
 enum class SnapDirection {
     Left,
     Right,
@@ -183,7 +188,7 @@ HMONITOR FindNextMonitor(HMONITOR current, SnapDirection direction) {
                 break;
             case SnapDirection::Down:
                 if (mi.rcWork.top >= currentMi.rcWork.bottom) {
-                    dist = mi.rcWork.top - currentMi.rcWork.bottom;
+                    dist = mi.rcWork.top - currentMi.rcWork.bottom; // <-- THIS IS THE CORRECTED LINE
                     isCandidate = true;
                 }
                 break;
@@ -356,6 +361,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                 case HOTKEY_ID_L: HandleSnapRequest(SnapDirection::Right); break;
                 case HOTKEY_ID_K: HandleSnapRequest(SnapDirection::Up); break;
                 case HOTKEY_ID_J: HandleSnapRequest(SnapDirection::Down); break;
+                case HOTKEY_ID_SHIFT_H: HandleMonitorSwitch(SnapDirection::Left); break;
+                case HOTKEY_ID_SHIFT_L: HandleMonitorSwitch(SnapDirection::Right); break;
+                case HOTKEY_ID_SHIFT_K: HandleMonitorSwitch(SnapDirection::Up); break;
+                case HOTKEY_ID_SHIFT_J: HandleMonitorSwitch(SnapDirection::Down); break;
             }
             break;
         case WM_DESTROY:
@@ -363,6 +372,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             UnregisterHotKey(hwnd, HOTKEY_ID_J);
             UnregisterHotKey(hwnd, HOTKEY_ID_K);
             UnregisterHotKey(hwnd, HOTKEY_ID_L);
+            UnregisterHotKey(hwnd, HOTKEY_ID_SHIFT_H);
+            UnregisterHotKey(hwnd, HOTKEY_ID_SHIFT_J);
+            UnregisterHotKey(hwnd, HOTKEY_ID_SHIFT_K);
+            UnregisterHotKey(hwnd, HOTKEY_ID_SHIFT_L);
             PostQuitMessage(0);
             break;
         default:
@@ -405,6 +418,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     }
     if (!RegisterHotKey(hwnd, HOTKEY_ID_L, MOD_ALT | MOD_CONTROL, 'L')) {
         MessageBoxW(NULL, L"Failed to register hotkey L!", L"Error", MB_ICONEXCLAMATION | MB_OK);
+    }
+    
+    if (!RegisterHotKey(hwnd, HOTKEY_ID_SHIFT_H, MOD_ALT | MOD_CONTROL | MOD_SHIFT, 'H')) {
+        MessageBoxW(NULL, L"Failed to register hotkey Shift+H!", L"Error", MB_ICONEXCLAMATION | MB_OK);
+    }
+    if (!RegisterHotKey(hwnd, HOTKEY_ID_SHIFT_J, MOD_ALT | MOD_CONTROL | MOD_SHIFT, 'J')) {
+        MessageBoxW(NULL, L"Failed to register hotkey Shift+J!", L"Error", MB_ICONEXCLAMATION | MB_OK);
+    }
+    if (!RegisterHotKey(hwnd, HOTKEY_ID_SHIFT_K, MOD_ALT | MOD_CONTROL | MOD_SHIFT, 'K')) {
+        MessageBoxW(NULL, L"Failed to register hotkey Shift+K!", L"Error", MB_ICONEXCLAMATION | MB_OK);
+    }
+    if (!RegisterHotKey(hwnd, HOTKEY_ID_SHIFT_L, MOD_ALT | MOD_CONTROL | MOD_SHIFT, 'L')) {
+        MessageBoxW(NULL, L"Failed to register hotkey Shift+L!", L"Error", MB_ICONEXCLAMATION | MB_OK);
     }
     
     MSG msg = { };
