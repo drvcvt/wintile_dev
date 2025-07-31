@@ -1,0 +1,10 @@
+^C:\USERS\QKEU50\DOCUMENTS\CPP\WINTILE_DEV\BUILD\CMAKEFILES\61A6A5BA52A3C43FE358686AC50C0F6C\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/qkeu50/Documents/cpp/wintile_dev/wintile -BC:/Users/qkeu50/Documents/cpp/wintile_dev/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/qkeu50/Documents/cpp/wintile_dev/build/WinVimTiler.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
