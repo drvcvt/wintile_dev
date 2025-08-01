@@ -80,23 +80,27 @@ BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMoni
 
 // Add hook procedure
 void CALLBACK WinEventProc(HWINEVENTHOOK hook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime) {
-    if (hwnd && ShouldWindowHaveBorder(hwnd)) {
-        switch (event) {
-            case EVENT_SYSTEM_MOVESIZEEND:
-            case EVENT_SYSTEM_MINIMIZEEND:
-            case EVENT_OBJECT_SHOW:
-                if (hwnd == currentFocusedWindow) {
-                    CreateOrUpdateBorder(hwnd);
-                }
-                break;
-            case EVENT_SYSTEM_FOREGROUND:
-                UpdateFocusedWindow();
-                break;
-            case EVENT_OBJECT_DESTROY:
-            case EVENT_OBJECT_HIDE:
-                RemoveBorder(hwnd);
-                break;
-        }
+    if (!hwnd)
+        return;
+
+    switch (event) {
+        case EVENT_OBJECT_DESTROY:
+        case EVENT_OBJECT_HIDE:
+            // Always remove the border when a window is hidden or destroyed
+            RemoveBorder(hwnd);
+            break;
+
+        case EVENT_SYSTEM_MOVESIZEEND:
+        case EVENT_SYSTEM_MINIMIZEEND:
+        case EVENT_OBJECT_SHOW:
+            if (hwnd == currentFocusedWindow && ShouldWindowHaveBorder(hwnd)) {
+                CreateOrUpdateBorder(hwnd);
+            }
+            break;
+
+        case EVENT_SYSTEM_FOREGROUND:
+            UpdateFocusedWindow();
+            break;
     }
 }
 
