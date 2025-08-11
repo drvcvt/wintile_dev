@@ -1,12 +1,9 @@
 #include <windows.h>
-#include <map>
 #include <vector>
-#include <set>
 #include <dwmapi.h>  // Add DWM API support
 
 // Add includes for unordered_map and hooks
 #include <unordered_map>
-#include <unordered_set>
 #include <windowsx.h> // For GET_X_LPARAM etc if needed
 
 // Hotkey IDs
@@ -20,13 +17,21 @@
 #define HOTKEY_ID_SHIFT_K 7
 #define HOTKEY_ID_SHIFT_L 8
 
+#define HOTKEY_ID_LEFT_ARROW 9
+#define HOTKEY_ID_DOWN_ARROW 10
+#define HOTKEY_ID_UP_ARROW 11
+#define HOTKEY_ID_RIGHT_ARROW 12
+
+#define HOTKEY_ID_SHIFT_LEFT_ARROW 13
+#define HOTKEY_ID_SHIFT_DOWN_ARROW 14
+#define HOTKEY_ID_SHIFT_UP_ARROW 15
+#define HOTKEY_ID_SHIFT_RIGHT_ARROW 16
+
 // Border and padding configuration
 #define BORDER_WIDTH 2
 #define PADDING 6
 #define FOCUSED_BORDER_COLOR RGB(100, 149, 237)  // Blue-gray for focused window
 #define TRANSPARENT_COLOR RGB(255, 0, 255)  // Magenta for color-key transparency
-#define BORDER_UPDATE_TIMER 1
-#define BORDER_UPDATE_INTERVAL 20  // Update every 50ms for good balance of performance and responsiveness
 
 enum class SnapDirection {
     Left,
@@ -728,10 +733,18 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                 case HOTKEY_ID_L: HandleSnapRequest(SnapDirection::Right); break;
                 case HOTKEY_ID_K: HandleSnapRequest(SnapDirection::Up); break;
                 case HOTKEY_ID_J: HandleSnapRequest(SnapDirection::Down); break;
+                case HOTKEY_ID_LEFT_ARROW: HandleSnapRequest(SnapDirection::Left); break;
+                case HOTKEY_ID_RIGHT_ARROW: HandleSnapRequest(SnapDirection::Right); break;
+                case HOTKEY_ID_UP_ARROW: HandleSnapRequest(SnapDirection::Up); break;
+                case HOTKEY_ID_DOWN_ARROW: HandleSnapRequest(SnapDirection::Down); break;
                 case HOTKEY_ID_SHIFT_H: HandleMonitorSwitch(SnapDirection::Left); break;
                 case HOTKEY_ID_SHIFT_L: HandleMonitorSwitch(SnapDirection::Right); break;
                 case HOTKEY_ID_SHIFT_K: HandleMonitorSwitch(SnapDirection::Up); break;
                 case HOTKEY_ID_SHIFT_J: HandleMonitorSwitch(SnapDirection::Down); break;
+                case HOTKEY_ID_SHIFT_LEFT_ARROW: HandleMonitorSwitch(SnapDirection::Left); break;
+                case HOTKEY_ID_SHIFT_RIGHT_ARROW: HandleMonitorSwitch(SnapDirection::Right); break;
+                case HOTKEY_ID_SHIFT_UP_ARROW: HandleMonitorSwitch(SnapDirection::Up); break;
+                case HOTKEY_ID_SHIFT_DOWN_ARROW: HandleMonitorSwitch(SnapDirection::Down); break;
             }
             break;
         case WM_DESTROY:
@@ -749,6 +762,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             UnregisterHotKey(hwnd, HOTKEY_ID_SHIFT_J);
             UnregisterHotKey(hwnd, HOTKEY_ID_SHIFT_K);
             UnregisterHotKey(hwnd, HOTKEY_ID_SHIFT_L);
+            UnregisterHotKey(hwnd, HOTKEY_ID_LEFT_ARROW);
+            UnregisterHotKey(hwnd, HOTKEY_ID_RIGHT_ARROW);
+            UnregisterHotKey(hwnd, HOTKEY_ID_UP_ARROW);
+            UnregisterHotKey(hwnd, HOTKEY_ID_DOWN_ARROW);
+            UnregisterHotKey(hwnd, HOTKEY_ID_SHIFT_LEFT_ARROW);
+            UnregisterHotKey(hwnd, HOTKEY_ID_SHIFT_RIGHT_ARROW);
+            UnregisterHotKey(hwnd, HOTKEY_ID_SHIFT_UP_ARROW);
+            UnregisterHotKey(hwnd, HOTKEY_ID_SHIFT_DOWN_ARROW);
 
             PostQuitMessage(0);
             break;
@@ -802,6 +823,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     if (!RegisterHotKey(hwnd, HOTKEY_ID_L, MOD_ALT | MOD_CONTROL, 'L')) {
         MessageBoxW(NULL, L"Failed to register hotkey L!", L"Error", MB_ICONEXCLAMATION | MB_OK);
     }
+
+    if (!RegisterHotKey(hwnd, HOTKEY_ID_LEFT_ARROW, MOD_ALT | MOD_CONTROL, VK_LEFT)) {
+        MessageBoxW(NULL, L"Failed to register hotkey Left Arrow!", L"Error", MB_ICONEXCLAMATION | MB_OK);
+    }
+    if (!RegisterHotKey(hwnd, HOTKEY_ID_DOWN_ARROW, MOD_ALT | MOD_CONTROL, VK_DOWN)) {
+        MessageBoxW(NULL, L"Failed to register hotkey Down Arrow!", L"Error", MB_ICONEXCLAMATION | MB_OK);
+    }
+    if (!RegisterHotKey(hwnd, HOTKEY_ID_UP_ARROW, MOD_ALT | MOD_CONTROL, VK_UP)) {
+        MessageBoxW(NULL, L"Failed to register hotkey Up Arrow!", L"Error", MB_ICONEXCLAMATION | MB_OK);
+    }
+    if (!RegisterHotKey(hwnd, HOTKEY_ID_RIGHT_ARROW, MOD_ALT | MOD_CONTROL, VK_RIGHT)) {
+        MessageBoxW(NULL, L"Failed to register hotkey Right Arrow!", L"Error", MB_ICONEXCLAMATION | MB_OK);
+    }
     
     if (!RegisterHotKey(hwnd, HOTKEY_ID_SHIFT_H, MOD_ALT | MOD_CONTROL | MOD_SHIFT, 'H')) {
         MessageBoxW(NULL, L"Failed to register hotkey Shift+H!", L"Error", MB_ICONEXCLAMATION | MB_OK);
@@ -814,6 +848,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     }
     if (!RegisterHotKey(hwnd, HOTKEY_ID_SHIFT_L, MOD_ALT | MOD_CONTROL | MOD_SHIFT, 'L')) {
         MessageBoxW(NULL, L"Failed to register hotkey Shift+L!", L"Error", MB_ICONEXCLAMATION | MB_OK);
+    }
+
+    if (!RegisterHotKey(hwnd, HOTKEY_ID_SHIFT_LEFT_ARROW, MOD_ALT | MOD_CONTROL | MOD_SHIFT, VK_LEFT)) {
+        MessageBoxW(NULL, L"Failed to register hotkey Shift+Left Arrow!", L"Error", MB_ICONEXCLAMATION | MB_OK);
+    }
+    if (!RegisterHotKey(hwnd, HOTKEY_ID_SHIFT_DOWN_ARROW, MOD_ALT | MOD_CONTROL | MOD_SHIFT, VK_DOWN)) {
+        MessageBoxW(NULL, L"Failed to register hotkey Shift+Down Arrow!", L"Error", MB_ICONEXCLAMATION | MB_OK);
+    }
+    if (!RegisterHotKey(hwnd, HOTKEY_ID_SHIFT_UP_ARROW, MOD_ALT | MOD_CONTROL | MOD_SHIFT, VK_UP)) {
+        MessageBoxW(NULL, L"Failed to register hotkey Shift+Up Arrow!", L"Error", MB_ICONEXCLAMATION | MB_OK);
+    }
+    if (!RegisterHotKey(hwnd, HOTKEY_ID_SHIFT_RIGHT_ARROW, MOD_ALT | MOD_CONTROL | MOD_SHIFT, VK_RIGHT)) {
+        MessageBoxW(NULL, L"Failed to register hotkey Shift+Right Arrow!", L"Error", MB_ICONEXCLAMATION | MB_OK);
     }
     
     // Setup event hook instead of timer
