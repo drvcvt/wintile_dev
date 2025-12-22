@@ -1,3 +1,0 @@
-C:/Users/qkeu50/Documents/cpp/wintile_dev/wintile/CMakeFiles/WinVimTiler.dir
-C:/Users/qkeu50/Documents/cpp/wintile_dev/wintile/CMakeFiles/ALL_BUILD.dir
-C:/Users/qkeu50/Documents/cpp/wintile_dev/wintile/CMakeFiles/ZERO_CHECK.dir
